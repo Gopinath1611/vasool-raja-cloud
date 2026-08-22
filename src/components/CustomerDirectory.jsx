@@ -11,10 +11,14 @@ export default function CustomerDirectory({ user, profile, customers, t, lang })
   const [showModal, setShowModal] = useState(false);
   const [editingCustomer, setEditingCustomer] = useState(null);
 
+  // மாவட்டம், தாலுகா அல்லது பெயர் வைத்து தேடும் வசதி (Search Filter)
   const filtered = customers.filter(
     (c) =>
       c.name.toLowerCase().includes(query.toLowerCase()) ||
-      c.area.toLowerCase().includes(query.toLowerCase()) ||
+      (c.district && c.district.toLowerCase().includes(query.toLowerCase())) ||
+      (c.taluk && c.taluk.toLowerCase().includes(query.toLowerCase())) ||
+      (c.address && c.address.toLowerCase().includes(query.toLowerCase())) ||
+      (c.area && c.area.toLowerCase().includes(query.toLowerCase())) ||
       c.stbId.toLowerCase().includes(query.toLowerCase())
   );
 
@@ -48,7 +52,9 @@ export default function CustomerDirectory({ user, profile, customers, t, lang })
       "Customer Name": c.name,
       Mobile: c.phone,
       "STB ID": c.stbId,
-      Area: c.area,
+      District: c.district || "",
+      Taluk: c.taluk || "",
+      Address: c.address || c.area || "",
       Package: c.package,
       "Amount (Rs)": c.amount,
       "Bill Day": c.billDay,
@@ -105,7 +111,7 @@ export default function CustomerDirectory({ user, profile, customers, t, lang })
         >
           <div className="col-span-3">Customer</div>
           <div className="col-span-2">{t.stb}</div>
-          <div className="col-span-2">{t.area}</div>
+          <div className="col-span-2">District / Taluk</div>
           <div className="col-span-2">
             {t.pkg} / {t.billDay}
           </div>
@@ -132,10 +138,13 @@ export default function CustomerDirectory({ user, profile, customers, t, lang })
               <div className="text-xs md:col-span-2 mono" style={{ color: C.textMute }}>
                 {c.stbId}
               </div>
+              
+              {/* மாவட்ட மற்றும் தாலுகா தகவலை அட்டவணையில் காட்டுவது */}
               <div className="text-xs md:col-span-2 flex items-center gap-1" style={{ color: C.textMute }}>
                 <MapPin size={11} />
-                {c.area}
+                {c.district ? `${c.district}${c.taluk ? `, ${c.taluk}` : ""}` : c.area || "-"}
               </div>
+
               <div className="text-xs md:col-span-2 font-medium" style={{ color: C.textMute }}>
                 {c.package} <br />
                 <span className="text-[10px]">Day {c.billDay}</span>
