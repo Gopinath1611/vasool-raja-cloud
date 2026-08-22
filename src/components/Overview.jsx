@@ -8,9 +8,8 @@ import {
   Tooltip,
   CartesianGrid,
 } from "recharts";
-import { Banknote, TrendingUp, Clock, AlertTriangle, CheckCircle2 } from "lucide-react";
+import { CheckCircle2 } from "lucide-react";
 import { C } from "../constants/colors";
-import Kpi from "./Kpi";
 
 export default function Overview({ profile, customers, transactions, t }) {
   const today = new Date().toISOString().split("T")[0];
@@ -66,30 +65,49 @@ export default function Overview({ profile, customers, transactions, t }) {
         </div>
       )}
 
-      {/* KPI Cards Grid */}
+      {/* --- KPI Cards Grid (Vibrant Gradient Look) --- */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Kpi
-          icon={Banknote}
-          label={t.today}
-          value={`₹${collectedToday.toLocaleString("en-IN")}`}
-          sub={`Cash ₹${cashToday} · Digital ₹${digitalToday}`}
-          color={C.emerald}
-        />
-        <Kpi
-          icon={TrendingUp}
-          label={t.mtd}
-          value={`₹${mtd.toLocaleString("en-IN")}`}
-          sub="Revenue this month"
-          color={C.emeraldDeep}
-        />
-        <Kpi
-          icon={Clock}
-          label={t.pending}
-          value={`₹${pending.toLocaleString("en-IN")}`}
-          sub={`${customers.filter((c) => c.status !== "paid").length} accounts`}
-          color={C.amber}
-        />
-        <Kpi icon={AlertTriangle} label={t.defaulters} value={defaulters.length} sub="Grace period crossed" color={C.crimson} />
+        
+        {/* Today's Collection */}
+        <div className="bg-gradient-to-br from-emerald-500/15 via-white to-white p-5 rounded-3xl border border-emerald-200 shadow-sm hover:shadow-md transition-all">
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-xs font-bold tracking-wider text-emerald-700 uppercase">{t.today}</span>
+            <div className="w-10 h-10 rounded-2xl bg-emerald-500 text-white flex items-center justify-center shadow-md shadow-emerald-500/20 font-bold">₹</div>
+          </div>
+          <div className="text-2xl font-black text-slate-800 tracking-tight">₹{collectedToday.toLocaleString("en-IN")}</div>
+          <div className="text-[11px] text-slate-500 mt-1 font-medium">Cash ₹{cashToday} · Digital ₹{digitalToday}</div>
+        </div>
+
+        {/* Month to Date */}
+        <div className="bg-gradient-to-br from-blue-500/15 via-white to-white p-5 rounded-3xl border border-blue-200 shadow-sm hover:shadow-md transition-all">
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-xs font-bold tracking-wider text-blue-700 uppercase">{t.mtd}</span>
+            <div className="w-10 h-10 rounded-2xl bg-blue-500 text-white flex items-center justify-center shadow-md shadow-blue-500/20 font-bold">📈</div>
+          </div>
+          <div className="text-2xl font-black text-slate-800 tracking-tight">₹{mtd.toLocaleString("en-IN")}</div>
+          <div className="text-[11px] text-slate-500 mt-1 font-medium">Revenue this month</div>
+        </div>
+
+        {/* Pending Dues */}
+        <div className="bg-gradient-to-br from-amber-500/15 via-white to-white p-5 rounded-3xl border border-amber-200 shadow-sm hover:shadow-md transition-all">
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-xs font-bold tracking-wider text-amber-700 uppercase">{t.pending}</span>
+            <div className="w-10 h-10 rounded-2xl bg-amber-500 text-white flex items-center justify-center shadow-md shadow-amber-500/20 font-bold">⏳</div>
+          </div>
+          <div className="text-2xl font-black text-slate-800 tracking-tight">₹{pending.toLocaleString("en-IN")}</div>
+          <div className="text-[11px] text-slate-500 mt-1 font-medium">{customers.filter((c) => c.status !== "paid").length} accounts</div>
+        </div>
+
+        {/* Defaulters */}
+        <div className="bg-gradient-to-br from-rose-500/15 via-white to-white p-5 rounded-3xl border border-rose-200 shadow-sm hover:shadow-md transition-all">
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-xs font-bold tracking-wider text-rose-700 uppercase">{t.defaulters}</span>
+            <div className="w-10 h-10 rounded-2xl bg-rose-500 text-white flex items-center justify-center shadow-md shadow-rose-500/20 font-bold">⚠️</div>
+          </div>
+          <div className="text-2xl font-black text-slate-800 tracking-tight">{defaulters.length}</div>
+          <div className="text-[11px] text-rose-600 mt-1 font-bold">Grace period crossed</div>
+        </div>
+
       </div>
 
       {/* Analytics & Lists Grid */}
@@ -100,7 +118,7 @@ export default function Overview({ profile, customers, transactions, t }) {
             <h3 className="disp font-extrabold text-base tracking-tight" style={{ color: C.text }}>
               Revenue Analytics (Last 7 Days)
             </h3>
-            <span style={{ color: C.emerald, background: C.emeraldSoft }} className="text-xs font-bold px-2.5 py-1 rounded-full">
+            <span style={{ color: C.emerald, background: C.emeraldSoft }} className="text-xs font-bold px-3 py-1 rounded-full">
               Real-time
             </span>
           </div>
@@ -171,7 +189,7 @@ export default function Overview({ profile, customers, transactions, t }) {
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
             {defaulters.slice(0, 4).map((c) => (
-              <div key={c.id} className="flex items-center justify-between p-3 rounded-2xl border" style={{ borderColor: C.border, background: C.slateBg }}>
+              <div key={c.id} className="flex items-center justify-between p-3.5 rounded-2xl border" style={{ borderColor: C.border, background: C.slateBg }}>
                 <div className="flex items-center gap-3">
                   <span style={{ background: C.crimsonSoft, color: C.crimson }} className="w-10 h-10 rounded-2xl flex items-center justify-center text-sm font-bold shrink-0">
                     {c.name[0]}
