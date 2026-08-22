@@ -47,11 +47,12 @@ export default function Overview({ profile, customers, transactions, t }) {
     : 0;
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-6">
+      {/* Trial Banner */}
       {profile?.plan === "Trial" && daysLeft > 0 && (
         <div
           style={{ background: C.amberSoft, border: `1px solid ${C.amberLine}`, color: C.amber }}
-          className="px-4 py-3 rounded-xl flex items-center justify-between text-sm font-bold shadow-sm"
+          className="px-5 py-3.5 rounded-2xl flex items-center justify-between text-sm font-bold shadow-sm"
         >
           <span>🚀 You are on a Free Trial. {daysLeft} days remaining.</span>
         </div>
@@ -59,13 +60,14 @@ export default function Overview({ profile, customers, transactions, t }) {
       {profile?.plan === "Trial" && daysLeft <= 0 && (
         <div
           style={{ background: C.crimsonSoft, border: `1px solid ${C.crimsonLine}`, color: C.crimson }}
-          className="px-4 py-3 rounded-xl flex items-center justify-between text-sm font-bold shadow-sm"
+          className="px-5 py-3.5 rounded-2xl flex items-center justify-between text-sm font-bold shadow-sm"
         >
           <span>⚠️ Your trial has expired. Upgrade your plan to continue adding customers.</span>
         </div>
       )}
 
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+      {/* KPI Cards Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <Kpi
           icon={Banknote}
           label={t.today}
@@ -90,56 +92,61 @@ export default function Overview({ profile, customers, transactions, t }) {
         <Kpi icon={AlertTriangle} label={t.defaulters} value={defaulters.length} sub="Grace period crossed" color={C.crimson} />
       </div>
 
-      <div className="grid md:grid-cols-3 gap-4">
-        <div style={{ background: C.card, border: `1px solid ${C.border}` }} className="rounded-2xl p-5 shadow-sm md:col-span-2">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="disp font-bold text-sm" style={{ color: C.text }}>
+      {/* Analytics & Lists Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+        {/* Revenue Analytics Chart */}
+        <div style={{ background: C.card, border: `1px solid ${C.border}` }} className="rounded-3xl p-6 shadow-sm lg:col-span-2">
+          <div className="flex items-center justify-between mb-5">
+            <h3 className="disp font-extrabold text-base tracking-tight" style={{ color: C.text }}>
               Revenue Analytics (Last 7 Days)
             </h3>
-            <span style={{ color: C.textFaint }} className="text-xs font-semibold">
+            <span style={{ color: C.emerald, background: C.emeraldSoft }} className="text-xs font-bold px-2.5 py-1 rounded-full">
               Real-time
             </span>
           </div>
-          <ResponsiveContainer width="100%" height={200}>
-            <LineChart data={chartData}>
-              <CartesianGrid stroke={C.border} vertical={false} strokeDasharray="3 3" />
-              <XAxis dataKey="day" tick={{ fontSize: 11, fill: C.textMute }} axisLine={false} tickLine={false} />
-              <YAxis
-                tick={{ fontSize: 11, fill: C.textFaint }}
-                axisLine={false}
-                tickLine={false}
-                width={40}
-                tickFormatter={(val) => `₹${val}`}
-              />
-              <Tooltip contentStyle={{ borderRadius: 12, border: `1px solid ${C.border}`, fontSize: 12, fontWeight: "bold" }} />
-              <Line
-                type="monotone"
-                dataKey="amt"
-                stroke={C.emerald}
-                strokeWidth={3}
-                dot={{ r: 4, fill: C.emerald, strokeWidth: 2, stroke: "#fff" }}
-                activeDot={{ r: 6 }}
-              />
-            </LineChart>
-          </ResponsiveContainer>
+          <div className="w-full h-60">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={chartData}>
+                <CartesianGrid stroke={C.border} vertical={false} strokeDasharray="3 3" />
+                <XAxis dataKey="day" tick={{ fontSize: 11, fill: C.textMute }} axisLine={false} tickLine={false} />
+                <YAxis
+                  tick={{ fontSize: 11, fill: C.textFaint }}
+                  axisLine={false}
+                  tickLine={false}
+                  width={45}
+                  tickFormatter={(val) => `₹${val}`}
+                />
+                <Tooltip contentStyle={{ borderRadius: 12, border: `1px solid ${C.border}`, fontSize: 12, fontWeight: "bold", background: "#fff" }} />
+                <Line
+                  type="monotone"
+                  dataKey="amt"
+                  stroke={C.emerald}
+                  strokeWidth={3}
+                  dot={{ r: 4, fill: C.emerald, strokeWidth: 2, stroke: "#fff" }}
+                  activeDot={{ r: 6 }}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
         </div>
 
-        <div style={{ background: C.card, border: `1px solid ${C.border}` }} className="rounded-2xl p-5 shadow-sm">
-          <h3 className="disp font-bold text-sm mb-3" style={{ color: C.text }}>
+        {/* Recent Transactions */}
+        <div style={{ background: C.card, border: `1px solid ${C.border}` }} className="rounded-3xl p-6 shadow-sm">
+          <h3 className="disp font-extrabold text-base mb-4 tracking-tight" style={{ color: C.text }}>
             {t.recentTx}
           </h3>
-          <div className="space-y-2">
+          <div className="space-y-3">
             {transactions.slice(0, 4).map((tx) => (
-              <div key={tx.id} className="flex items-center justify-between py-2" style={{ borderBottom: `1px solid ${C.border}` }}>
-                <div className="flex items-center gap-2.5">
-                  <div style={{ background: C.emeraldSoft, color: C.emerald }} className="w-8 h-8 rounded-full flex items-center justify-center">
-                    <CheckCircle2 size={14} />
+              <div key={tx.id} className="flex items-center justify-between py-2.5" style={{ borderBottom: `1px solid ${C.border}` }}>
+                <div className="flex items-center gap-3">
+                  <div style={{ background: C.emeraldSoft, color: C.emerald }} className="w-9 h-9 rounded-2xl flex items-center justify-center shrink-0">
+                    <CheckCircle2 size={16} />
                   </div>
                   <div>
-                    <div className="text-sm font-medium" style={{ color: C.text }}>
+                    <div className="text-sm font-semibold leading-snug" style={{ color: C.text }}>
                       {tx.customerName}
                     </div>
-                    <div style={{ color: C.textFaint }} className="text-[10px] font-bold uppercase tracking-wider">
+                    <div style={{ color: C.textFaint }} className="text-[10px] font-bold uppercase tracking-wider mt-0.5">
                       {tx.mode} · {new Date(tx.date).toLocaleDateString()}
                     </div>
                   </div>
@@ -150,26 +157,27 @@ export default function Overview({ profile, customers, transactions, t }) {
               </div>
             ))}
             {transactions.length === 0 && (
-              <p className="text-sm text-center py-4" style={{ color: C.textFaint }}>
+              <p className="text-sm text-center py-8" style={{ color: C.textFaint }}>
                 No transactions yet.
               </p>
             )}
           </div>
         </div>
 
-        <div style={{ background: C.card, border: `1px solid ${C.border}` }} className="rounded-2xl p-5 shadow-sm">
-          <h3 className="disp font-bold text-sm mb-3" style={{ color: C.text }}>
+        {/* Top Defaulters */}
+        <div style={{ background: C.card, border: `1px solid ${C.border}` }} className="rounded-3xl p-6 shadow-sm lg:col-span-3">
+          <h3 className="disp font-extrabold text-base mb-4 tracking-tight" style={{ color: C.text }}>
             {t.topDefaulters}
           </h3>
-          <div className="space-y-2">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
             {defaulters.slice(0, 4).map((c) => (
-              <div key={c.id} className="flex items-center justify-between py-2" style={{ borderBottom: `1px solid ${C.border}` }}>
-                <div className="flex items-center gap-2.5">
-                  <span style={{ background: C.crimsonSoft, color: C.crimson }} className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold">
+              <div key={c.id} className="flex items-center justify-between p-3 rounded-2xl border" style={{ borderColor: C.border, background: C.slateBg }}>
+                <div className="flex items-center gap-3">
+                  <span style={{ background: C.crimsonSoft, color: C.crimson }} className="w-10 h-10 rounded-2xl flex items-center justify-center text-sm font-bold shrink-0">
                     {c.name[0]}
                   </span>
                   <div>
-                    <div className="text-sm font-medium" style={{ color: C.text }}>
+                    <div className="text-sm font-semibold" style={{ color: C.text }}>
                       {c.name}
                     </div>
                     <div style={{ color: C.textFaint }} className="text-xs">
@@ -183,8 +191,8 @@ export default function Overview({ profile, customers, transactions, t }) {
               </div>
             ))}
             {defaulters.length === 0 && (
-              <p className="text-sm text-center py-4" style={{ color: C.textFaint }}>
-                Clean sheet!
+              <p className="text-sm text-center py-4 col-span-full" style={{ color: C.textFaint }}>
+                Clean sheet! No defaulters.
               </p>
             )}
           </div>
