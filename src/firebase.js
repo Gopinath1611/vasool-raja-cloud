@@ -22,12 +22,13 @@ import {
 
 // உங்களது உண்மையான Firebase விவரங்களை இங்கே நேரடியாகப் போடவும்:
 const firebaseConfig = {
-  apiKey: "AIzaSyYourActualApiKeyHere",
-  authDomain: "your-project-id.firebaseapp.com",
-  projectId: "your-project-id",
-  storageBucket: "your-project-id.appspot.com",
-  messagingSenderId: "1234567890",
-  appId: "1:1234567890:web:abcdef"
+  apiKey: "AIzaSyD2MgO9vr37dN4AvC5pFpeL8YSIaxYn3Dk",
+  authDomain: "vasool-raja-cloud.firebaseapp.com",
+  projectId: "vasool-raja-cloud",
+  storageBucket: "vasool-raja-cloud.firebasestorage.app",
+  messagingSenderId: "525595668471",
+  appId: "1:525595668471:web:11a821ef7e83613b6848f2",
+  measurementId: "G-9JL7T1R65J"
 };
 
 export const app = initializeApp(firebaseConfig);
