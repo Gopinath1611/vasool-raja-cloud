@@ -31,11 +31,10 @@ export default function Login({ onLogin, lang, setLang, t, agents }) {
       const formattedPhone = `+91${phone}`;
       const appVerifier = window.recaptchaVerifier;
       
-      // Firebase மூலம் உண்மையான SMS அனுப்புதல்
       const confirmationResult = await signInWithPhoneNumber(auth, formattedPhone, appVerifier);
       setConfResult(confirmationResult);
       setOtpSent(true);
-    } (catch err) {
+    } catch (err) {
       console.error(err);
       setError("SMS அனுப்புவதில் பிழை: " + (err.message || "Failed to send SMS"));
     }
@@ -50,7 +49,6 @@ export default function Login({ onLogin, lang, setLang, t, agents }) {
         throw new Error("Session expired. Please resend OTP.");
       }
       
-      // Firebase சர்வர் மூலம் OTP-ஐ உறுதிப்படுத்துவது (Strict Verification)
       await confResult.confirm(otp);
       onLogin({ role: "admin" });
     } catch (err) {
