@@ -2,23 +2,36 @@ import React, { useState } from "react";
 import { X } from "lucide-react";
 import { db, appId, doc, addDoc, collection, updateDoc } from "../firebase";
 import { C } from "../constants/colors";
-import { AREAS, PACKAGES } from "../constants/app";
+import { PACKAGES } from "../constants/app";
+import { tnDistricts } from "../constants/tnLocations";
 
 export default function AddEditCustomerModal({ user, customer, onClose, t }) {
   const isEdit = !!customer;
   const [form, setForm] = useState(
-    customer || {
-      name: "",
-      phone: "",
-      stbId: "",
-      area: AREAS[0],
-      package: PACKAGES[0],
-      amount: "",
-      billDay: 1,
-      lastPaidMonth: "",
-    }
+    customer
+      ? {
+          ...customer,
+          district: customer.district || "",
+          taluk: customer.taluk || "",
+          address: customer.address || customer.area || "",
+        }
+      : {
+          name: "",
+          phone: "",
+          stbId: "",
+          district: "",
+          taluk: "",
+          address: "",
+          package: PACKAGES[0],
+          amount: "",
+          billDay: 1,
+          lastPaidMonth: "",
+        }
   );
   const [loading, setLoading] = useState(false);
+
+  // மாவட்டம் மாறும்போது அதற்குரிய தாலுகாக்களை வடிகட்டுவது
+  const availableTaluks = form.district ? tnDistricts[form.district] || [] : [];
 
   const handleSubmit = async () => {
     if (!user || !form.name || !form.phone || !form.amount) return;
@@ -48,7 +61,7 @@ export default function AddEditCustomerModal({ user, customer, onClose, t }) {
       className="fixed inset-0 z-30 flex items-center justify-center px-4"
       style={{ background: "rgba(15,23,42,0.6)", backdropFilter: "blur(2px)" }}
     >
-      <div style={{ background: C.card }} className="w-full max-w-md rounded-2xl p-6 shadow-2xl">
+      <div style={{ background: C.card }} className="w-full max-w-md rounded-2xl p-6 shadow-2xl max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between mb-5">
           <h3 className="disp font-bold text-lg" style={{ color: C.text }}>
             {isEdit ? t.edit : t.addCustomer}
@@ -95,21 +108,62 @@ export default function AddEditCustomerModal({ user, customer, onClose, t }) {
               placeholder="STB1023"
             />
           </div>
-          <div className="col-span-2 sm:col-span-1">
+
+          {/* 1. மாவட்டம் (District) Dropdown */}
+          <div>
             <label className="text-xs font-semibold block mb-1.5" style={{ color: C.textMute }}>
-              {t.area}
+              மாவட்டம் (District)
             </label>
             <select
-              value={form.area}
-              onChange={(e) => setForm({ ...form, area: e.target.value })}
+              value={form.district}
+              onChange={(e) => setForm({ ...form, district: e.target.value, taluk: "" })}
               className="w-full border rounded-xl px-3 py-2 text-sm outline-none bg-white"
               style={{ borderColor: C.border }}
             >
-              {AREAS.map((a) => (
-                <option key={a}>{a}</option>
+              <option value="">மாவட்டம் தேர்ந்தெடுக்கவும்</option>
+              {Object.keys(tnDistricts).map((d) => (
+                <option key={d} value={d}>
+                  {d}
+                </option>
               ))}
             </select>
           </div>
+
+          {/* 2. தாலுகா (Taluk) Dropdown */}
+          <div>
+            <label className="text-xs font-semibold block mb-1.5" style={{ color: C.textMute }}>
+              தாலுகா (Taluk)
+            </label>
+            <select
+              value={form.taluk}
+              onChange={(e) => setForm({ ...form, taluk: e.target.value })}
+              disabled={!form.district}
+              className="w-full border rounded-xl px-3 py-2 text-sm outline-none bg-white disabled:bg-slate-100"
+              style={{ borderColor: C.border }}
+            >
+              <option value="">தாலுகா தேர்ந்தெடுக்கவும்</option>
+              {availableTaluks.map((t) => (
+                <option key={t} value={t}>
+                  {t}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* 3. கிராமம் / தெரு பெயர் (Village / Street) */}
+          <div className="col-span-2">
+            <label className="text-xs font-semibold block mb-1.5" style={{ color: C.textMute }}>
+              கிராமம் / தெரு பெயர் (Village / Street)
+            </label>
+            <input
+              value={form.address}
+              onChange={(e) => setForm({ ...form, address: e.target.value })}
+              className="w-full border rounded-xl px-3 py-2 text-sm outline-none"
+              style={{ borderColor: C.border }}
+              placeholder="உதாரணம்: வாலப்பம்பட்டி / மெயின் ரோடு"
+            />
+          </div>
+
           <div className="col-span-2 sm:col-span-1">
             <label className="text-xs font-semibold block mb-1.5" style={{ color: C.textMute }}>
               {t.pkg}
@@ -138,7 +192,7 @@ export default function AddEditCustomerModal({ user, customer, onClose, t }) {
               placeholder="250"
             />
           </div>
-          <div>
+          <div className="col-span-2">
             <label className="text-xs font-semibold block mb-1.5" style={{ color: C.textMute }}>
               {t.billDay}
             </label>
@@ -161,7 +215,7 @@ export default function AddEditCustomerModal({ user, customer, onClose, t }) {
           onClick={handleSubmit}
           disabled={loading || !form.name || !form.phone || !form.amount}
           style={{ background: C.emerald }}
-          className="w-full text-white font-bold py-3 rounded-xl shadow-md disabled:opacity-50 mt-2"
+          className="w-full text-white font-bold py-3 rounded-xl shadow-md disabled:opacity-50 mt-2 cursor-pointer"
         >
           {loading ? "..." : t.save}
         </button>
