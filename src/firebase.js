@@ -20,32 +20,22 @@ import {
   enableIndexedDbPersistence,
 } from "firebase/firestore";
 
-// Works both inside a sandbox/canvas environment that injects
-// __firebase_config / __app_id / __initial_auth_token globals,
-// and as a normal Vite app reading from a .env file.
-const injectedConfig =
-  typeof __firebase_config !== "undefined" ? JSON.parse(__firebase_config) : null;
-
-const firebaseConfig = injectedConfig || {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+// உங்களது உண்மையான Firebase விவரங்களை இங்கே நேரடியாகப் போடவும்:
+const firebaseConfig = {
+  apiKey: "AIzaSyYourActualApiKeyHere",
+  authDomain: "your-project-id.firebaseapp.com",
+  projectId: "your-project-id",
+  storageBucket: "your-project-id.appspot.com",
+  messagingSenderId: "1234567890",
+  appId: "1:1234567890:web:abcdef"
 };
 
 export const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const db = getFirestore(app);
 
-export const appId =
-  typeof __app_id !== "undefined"
-    ? __app_id
-    : import.meta.env.VITE_APP_ID || "vasool-raja-demo";
-
-export const initialAuthToken =
-  typeof __initial_auth_token !== "undefined" ? __initial_auth_token : null;
+export const appId = "vasool-raja-production";
+export const initialAuthToken = null;
 
 export {
   signInAnonymously,
